@@ -6,22 +6,6 @@ using UnityEngine.EventSystems;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float runSpeed = 500f;
-
-    void Awake()
-    {
-
-    }
-    void Update()
-    {
-        
-    }
-
-    private void Move()
-    {
-        transform.Translate(-transform.forward * runSpeed * Time.fixedDeltaTime);
-    }
-
 
     void FixedUpdate()
     {
@@ -38,7 +22,5 @@ public class PlayerMovement : MonoBehaviour
                     break;
             }
         }
-        Move();
-
     }
 }
