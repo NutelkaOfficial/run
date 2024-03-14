@@ -6,7 +6,16 @@ using UnityEngine.EventSystems;
 
 public class PlayerMovement : MonoBehaviour
 {
-
+    [SerializeField] private GameObject _losePanel;
+    public float runSpeed = 30f;
+    private void Move()
+    {
+        transform.Translate(-transform.forward * runSpeed * Time.fixedDeltaTime);
+    }
+    private void Start()
+    {
+        _losePanel.SetActive(false);
+    }
     void FixedUpdate()
     {
         if (Input.touchCount > 0)
@@ -21,6 +30,15 @@ public class PlayerMovement : MonoBehaviour
                     transform.position = new Vector3(touchPosition.x, transform.position.y, transform.position.z); // Перемещаем объект только по осям X и Y
                     break;
             }
+        }
+        Move();
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "obstacle")
+        {
+            _losePanel.SetActive(true);
+            Time.timeScale = 0;
         }
     }
 }
