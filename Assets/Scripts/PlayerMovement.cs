@@ -10,14 +10,25 @@ public class PlayerMovement : MonoBehaviour
     public float runSpeed = 30f;
     private void Move()
     {
-        transform.Translate(-transform.forward * runSpeed * Time.fixedDeltaTime);
+        if (transform.position.z < 250)
+        {
+            runSpeed = Mathf.MoveTowards(runSpeed, 40, 5f * Time.deltaTime);
+        }
+        else
+        {
+            runSpeed = Mathf.MoveTowards(runSpeed, 120, 2f * Time.deltaTime);
+        }
+
+        transform.Translate(-transform.forward * runSpeed * Time.deltaTime);
     }
     private void Start()
     {
         _losePanel.SetActive(false);
+        Time.timeScale = 1;
     }
     void FixedUpdate()
     {
+        Move();
         if (Input.touchCount > 0)
         {
             var touch = Input.GetTouch(0);
@@ -26,19 +37,21 @@ public class PlayerMovement : MonoBehaviour
             {
                 case TouchPhase.Began:
                 case TouchPhase.Moved:
-                    Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f)); // Преобразуем экранные координаты в мировые
-                    transform.position = new Vector3(touchPosition.x, transform.position.y, transform.position.z); // Перемещаем объект только по осям X и Y
+                    Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
+                    transform.position = new Vector3(touchPosition.x, transform.position.y, transform.position.z);
                     break;
             }
         }
-        Move();
+        
     }
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.tag == "obstacle")
-        {
-            _losePanel.SetActive(true);
-            Time.timeScale = 0;
-        }
-    }
+    //void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.collider.tag == "obstacle")
+    //    {
+    //        _losePanel.SetActive(true);
+    //        runSpeed = 0;
+    //        Time.timeScale = 0;
+    //        Debug.Log("Enter");
+    //    }
+    //}
 }
