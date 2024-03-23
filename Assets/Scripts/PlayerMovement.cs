@@ -44,14 +44,13 @@ public class PlayerMovement : MonoBehaviour
         }
         
     }
-    //void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.collider.tag == "obstacle")
-    //    {
-    //        _losePanel.SetActive(true);
-    //        runSpeed = 0;
-    //        Time.timeScale = 0;
-    //        Debug.Log("Enter");
-    //    }
-    //}
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "obstacle")
+        {
+            runSpeed = 0;
+            Time.timeScale = 0;
+            _losePanel.SetActive(true);
+        }
+    }
 }
