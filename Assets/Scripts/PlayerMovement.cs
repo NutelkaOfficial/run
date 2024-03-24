@@ -12,11 +12,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (transform.position.z < 250)
         {
-            runSpeed = Mathf.MoveTowards(runSpeed, 40, 5f * Time.deltaTime);
+            runSpeed = Mathf.MoveTowards(runSpeed, 40, 1f * Time.deltaTime);
         }
         else
         {
-            runSpeed = Mathf.MoveTowards(runSpeed, 120, 2f * Time.deltaTime);
+            runSpeed = Mathf.MoveTowards(runSpeed, 120, 0.3f * Time.deltaTime);
         }
 
         transform.Translate(-transform.forward * runSpeed * Time.deltaTime);
@@ -26,20 +26,23 @@ public class PlayerMovement : MonoBehaviour
         _losePanel.SetActive(false);
         Time.timeScale = 1;
     }
-    void FixedUpdate()
+    void Update()
     {
-        Move();
-        if (Input.touchCount > 0)
+        if (runSpeed > 0)
         {
-            var touch = Input.GetTouch(0);
-
-            switch (touch.phase)
+            Move();
+            if (Input.touchCount > 0)
             {
-                case TouchPhase.Began:
-                case TouchPhase.Moved:
-                    Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
-                    transform.position = new Vector3(touchPosition.x, transform.position.y, transform.position.z);
-                    break;
+                var touch = Input.GetTouch(0);
+
+                switch (touch.phase)
+                {
+                    case TouchPhase.Began:
+                    case TouchPhase.Moved:
+                        Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
+                        transform.position = new Vector3(touchPosition.x, transform.position.y, transform.position.z);
+                        break;
+                }
             }
         }
         
@@ -48,9 +51,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.collider.tag == "obstacle")
         {
-            runSpeed = 0;
-            Time.timeScale = 0;
-            _losePanel.SetActive(true);
+            //runSpeed = 0;
+            //_losePanel.SetActive(true);
         }
     }
 }
