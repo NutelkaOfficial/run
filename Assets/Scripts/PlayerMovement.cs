@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public AudioClip[] audioClip;
+    public AudioSource audioSource;
     [SerializeField] private GameObject _losePanel;
     public float runSpeed = 30f;
     private void Move()
@@ -23,12 +25,15 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Start()
     {
+        audioSource.clip = audioClip[0];
+        audioSource.loop = true;
+        audioSource.Play();
         _losePanel.SetActive(false);
         Time.timeScale = 1;
     }
     void Update()
     {
-        if (runSpeed > 0)
+        if (runSpeed > 4.99)
         {
             Move();
             if (Input.touchCount > 0)
@@ -51,8 +56,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.collider.tag == "obstacle")
         {
-            //runSpeed = 0;
-            //_losePanel.SetActive(true);
+            runSpeed = 0;
+            _losePanel.SetActive(true);
+            audioSource.loop = false;
+            audioSource.clip = audioClip[1];
+            audioSource.Play();
+            runSpeed = 0;
+            _losePanel.SetActive(true);
         }
     }
 }
