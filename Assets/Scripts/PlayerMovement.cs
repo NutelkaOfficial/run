@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -57,11 +53,11 @@ public class PlayerMovement : MonoBehaviour
         if (collision.collider.tag == "obstacle")
         {
             runSpeed = 0;
+            Time.timeScale = 0;
             _losePanel.SetActive(true);
             audioSource.loop = false;
             audioSource.clip = audioClip[1];
             audioSource.Play();
-            runSpeed = 0;
             _losePanel.SetActive(true);
         }
     }

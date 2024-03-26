@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     }
     public void resetButton()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
+        Debug.Log("сцена загружена");
     }
 }
