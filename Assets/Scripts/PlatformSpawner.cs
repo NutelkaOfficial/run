@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,18 +17,28 @@ public class PlatformSpawner : MonoBehaviour
         {
             SpawnPlatform(Random.Range(0, platformPrefabs.Length));
         }
-    }
-    private void Update()
-    {
-        if (_player.position.z - 90 > _startPos - (platformPrefabs.Length * _platformLenght))
+        for (int i = 0; i < platformPrefabs.Length; i++)
         {
-            SpawnPlatform(Random.Range(0, platformPrefabs.Length));
-            DeletePlatform();
+            platformPrefabs[i].SetActive(false);
+        }
+        StartCoroutine(SpawnCall());
+    }
+    private IEnumerator SpawnCall()
+    {
+        while (true)
+        {
+            if (_player.position.z - 90 > _startPos - (platformPrefabs.Length * _platformLenght))
+            {
+                SpawnPlatform(Random.Range(0, platformPrefabs.Length));
+                DeletePlatform();
+            }
+            yield return new WaitForSeconds(0.5f);
         }
     }
     private void SpawnPlatform(int index)
     {
         GameObject newPlatform = Instantiate(platformPrefabs[index], transform.forward * _startPos, Quaternion.identity);
+        newPlatform.SetActive(true);
         _createdPlatforms.Add(newPlatform);
         _startPos += _platformLenght;
     }
