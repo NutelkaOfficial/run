@@ -1,11 +1,18 @@
+using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     public AudioClip[] audioClip;
     public AudioSource audioSource;
     [SerializeField] private GameObject _losePanel;
+    [SerializeField] private Score _scoreScript;
+    [SerializeField] private Text _coinCountText;
+    private string _coinsText = "x ";
+    private int _coinCount = 0;
     public float runSpeed = 30f;
+    private int highScore;
     private void Move()
     {
         if (transform.position.z < 250)
@@ -21,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Start()
     {
+        highScore = PlayerPrefs.GetInt("score");
         audioSource.clip = audioClip[0];
         audioSource.loop = true;
         audioSource.Play();
@@ -50,6 +58,12 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
+        if (collision.collider.tag == "coin")
+        {
+            _coinCount++;
+            PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") + 1);
+            _coinCountText.text = _coinsText + _coinCount;
+        }
         if (collision.collider.tag == "obstacle")
         {
             runSpeed = 0;
@@ -58,7 +72,12 @@ public class PlayerMovement : MonoBehaviour
             audioSource.loop = false;
             audioSource.clip = audioClip[1];
             audioSource.Play();
-            _losePanel.SetActive(true);
+            int score = _scoreScript.score;
+            if (score > highScore)
+            {
+                PlayerPrefs.SetInt("score", score);
+                Debug.Log(PlayerPrefs.GetInt("coins") + "kkk" + PlayerPrefs.GetInt("score") + "kkk");
+            }
         }
     }
 }

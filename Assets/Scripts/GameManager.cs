@@ -7,8 +7,12 @@ public class GameManager : MonoBehaviour
     {
         Application.targetFrameRate = 600;
     }
-    public void resetButton()
+    public void ResetButton()
     {
         SceneManager.LoadScene(1);
+    }
+    public void MenuButton()
+    {
+        SceneManager.LoadScene(0);
     }
 }

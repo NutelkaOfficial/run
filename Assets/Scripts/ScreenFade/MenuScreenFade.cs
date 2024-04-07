@@ -21,5 +21,6 @@ public class MenuScreenFade : MonoBehaviour
             yield return null;
         }
         SceneManager.LoadScene(1);
+        color.a = 0f;
     }
 }
