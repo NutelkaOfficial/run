@@ -29,7 +29,7 @@ public class PlatformSpawner : MonoBehaviour
     {
         while (true)
         {
-            if (_player.position.z - 90 > _startPos - (platformPrefabs.Length * _platformLenght))
+            if (_player.position.z - 110 > _startPos - (platformPrefabs.Length * _platformLenght))
             {
                 SpawnPlatform(Random.Range(0, platformPrefabs.Length));
                 DeletePlatform();

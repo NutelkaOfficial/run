@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     public AudioSource audioSource;
     [SerializeField] private GameObject _losePanel;
     [SerializeField] private Score _scoreScript;
+    [SerializeField] private GameManager _gameManager;
     [SerializeField] private Text _coinCountText;
     private string _coinsText = "x ";
     private int _coinCount = 0;
@@ -39,45 +39,51 @@ public class PlayerMovement : MonoBehaviour
     {
         if (runSpeed > 4.99)
         {
-            Move();
-            if (Input.touchCount > 0)
+            if (_gameManager.pausePanel.activeSelf == false)
             {
-                var touch = Input.GetTouch(0);
-
-                switch (touch.phase)
+                Move();
+                if (Input.touchCount > 0)
                 {
-                    case TouchPhase.Began:
-                    case TouchPhase.Moved:
-                        Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
-                        transform.position = new Vector3(touchPosition.x, transform.position.y, transform.position.z);
-                        break;
+                    var touch = Input.GetTouch(0);
+
+                    switch (touch.phase)
+                    {
+                        case TouchPhase.Began:
+                        case TouchPhase.Moved:
+                            Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
+                            if (touchPosition.x < 7.41f || touchPosition.y > 14.13)
+                            {
+                                transform.position = new Vector3(touchPosition.x, transform.position.y, transform.position.z);
+                            }
+                            break;
+                    }
+
+                }
+            }
+
+        }
+    }
+        void OnCollisionEnter(Collision collision)
+        {
+            if (collision.collider.tag == "coin")
+            {
+                _coinCount++;
+                PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") + 1);
+                _coinCountText.text = _coinsText + _coinCount;
+            }
+            if (collision.collider.tag == "obstacle")
+            {
+                runSpeed = 0;
+                Time.timeScale = 0;
+                _losePanel.SetActive(true);
+                audioSource.loop = false;
+                audioSource.clip = audioClip[1];
+                audioSource.Play();
+                int score = _scoreScript.score;
+                if (score > highScore)
+                {
+                    PlayerPrefs.SetInt("score", score);
                 }
             }
         }
-        
-    }
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.tag == "coin")
-        {
-            _coinCount++;
-            PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") + 1);
-            _coinCountText.text = _coinsText + _coinCount;
-        }
-        if (collision.collider.tag == "obstacle")
-        {
-            runSpeed = 0;
-            Time.timeScale = 0;
-            _losePanel.SetActive(true);
-            audioSource.loop = false;
-            audioSource.clip = audioClip[1];
-            audioSource.Play();
-            int score = _scoreScript.score;
-            if (score > highScore)
-            {
-                PlayerPrefs.SetInt("score", score);
-                Debug.Log(PlayerPrefs.GetInt("coins") + "kkk" + PlayerPrefs.GetInt("score") + "kkk");
-            }
-        }
-    }
 }
