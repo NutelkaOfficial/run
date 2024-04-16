@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,7 +34,6 @@ public class PlayerMovement : MonoBehaviour
         audioSource.loop = true;
         audioSource.Play();
         _losePanel.SetActive(false);
-        Time.timeScale = 1;
     }
     void Update()
     {
@@ -45,22 +45,19 @@ public class PlayerMovement : MonoBehaviour
                 if (Input.touchCount > 0)
                 {
                     var touch = Input.GetTouch(0);
-
                     switch (touch.phase)
                     {
                         case TouchPhase.Began:
                         case TouchPhase.Moved:
                             Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
-                            if (touchPosition.x < 7.41f || touchPosition.y > 14.13)
+                            if (touchPosition.x < 9.24f || touchPosition.y < 54.45)
                             {
                                 transform.position = new Vector3(touchPosition.x, transform.position.y, transform.position.z);
                             }
                             break;
                     }
-
                 }
             }
-
         }
     }
         void OnCollisionEnter(Collision collision)
@@ -76,9 +73,9 @@ public class PlayerMovement : MonoBehaviour
                 runSpeed = 0;
                 Time.timeScale = 0;
                 _losePanel.SetActive(true);
-                audioSource.loop = false;
                 audioSource.clip = audioClip[1];
                 audioSource.Play();
+                audioSource.loop = false;
                 int score = _scoreScript.score;
                 if (score > highScore)
                 {

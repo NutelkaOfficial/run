@@ -1,5 +1,3 @@
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +11,6 @@ public class Menu : MonoBehaviour
     {
         Time.timeScale = 1;
         int highScore = PlayerPrefs.GetInt("score");
-        Debug.Log(highScore);
         scoreText.text = $"{highScore}";
         i = 0;
     }
@@ -24,16 +21,4 @@ public class Menu : MonoBehaviour
     }
     public void PlayButton()
     { fadeImage.SetActive(true); }
-    public void CarShop()
-    {
-        Debug.Log("1");
-    }
-    public void ObsShop()
-    {
-        Debug.Log("2");
-    }
-    public void RoadShop()
-    {
-        Debug.Log("3");
-    }
 }
