@@ -13,7 +13,7 @@ public class PlatformSpawner : MonoBehaviour
 
     [SerializeField] private Transform _player;
 
-    private void Start()
+    private void Awake()
     {
         for (int i = 0; i < platformPrefabs.Length; i++)
         {

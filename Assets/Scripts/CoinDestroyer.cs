@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class CoinDestroyer : MonoBehaviour
 {
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collider)
     {
-        if (collision.collider.tag == "Player" || collision.collider.tag == "obstacle")
+        if (collider.tag == "Player" || collider.tag == "obstacle")
         {
             Destroy(gameObject);
         }

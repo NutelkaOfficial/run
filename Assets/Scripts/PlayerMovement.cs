@@ -6,13 +6,14 @@ public class PlayerMovement : MonoBehaviour
 {
     public AudioClip[] audioClip;
     public AudioSource audioSource;
+    public float runSpeed = 30f;
     [SerializeField] private GameObject _losePanel;
     [SerializeField] private Score _scoreScript;
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private Text _coinCountText;
     private string _coinsText = "x ";
     private int _coinCount = 0;
-    public float runSpeed = 30f;
+    private bool _isGameEnd = false;
     private int highScore;
     private void Move()
     {
@@ -34,53 +35,63 @@ public class PlayerMovement : MonoBehaviour
         audioSource.loop = true;
         audioSource.Play();
         _losePanel.SetActive(false);
+        _isGameEnd = false;
     }
     void Update()
     {
-        if (runSpeed > 4.99)
+        if (Time.timeScale == 1)
         {
-            if (_gameManager.pausePanel.activeSelf == false)
+            Move();
+            if (Input.touchCount > 0)
             {
-                Move();
-                if (Input.touchCount > 0)
+                var touch = Input.GetTouch(0);
+                switch (touch.phase)
                 {
-                    var touch = Input.GetTouch(0);
-                    switch (touch.phase)
-                    {
-                        case TouchPhase.Began:
-                        case TouchPhase.Moved:
-                            Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
-                            if (touchPosition.x < 9.24f || touchPosition.y < 54.45)
-                            {
-                                transform.position = new Vector3(touchPosition.x, transform.position.y, transform.position.z);
-                            }
-                            break;
-                    }
+                    case TouchPhase.Began:
+                    case TouchPhase.Moved:
+                        Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10f));
+                        if (touchPosition.x < 9.24f || touchPosition.y < 54.45)
+                        {
+                            transform.position = new Vector3(touchPosition.x, transform.position.y, transform.position.z);
+                        }
+                        break;
                 }
             }
+        }
+        if (_isGameEnd)
+        {
+            _losePanel.SetActive(true);
+            audioSource.clip = audioClip[1];
+            audioSource.Play();
+            audioSource.loop = false;
+            int score = _scoreScript.score;
+            if (score > highScore)
+            {
+                PlayerPrefs.SetInt("score", score);
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                PlayerPrefs.SetInt($"Score {i}", PlayerPrefs.GetInt($"Score {i+1}"));
+            }
+            PlayerPrefs.SetInt("Score 3", score);
+            _isGameEnd = false;
         }
     }
-        void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.tag == "coin")
         {
-            if (collision.collider.tag == "coin")
-            {
-                _coinCount++;
-                PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") + 1);
-                _coinCountText.text = _coinsText + _coinCount;
-            }
-            if (collision.collider.tag == "obstacle")
-            {
-                runSpeed = 0;
-                Time.timeScale = 0;
-                _losePanel.SetActive(true);
-                audioSource.clip = audioClip[1];
-                audioSource.Play();
-                audioSource.loop = false;
-                int score = _scoreScript.score;
-                if (score > highScore)
-                {
-                    PlayerPrefs.SetInt("score", score);
-                }
-            }
+            _coinCount++;
+            PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") + 1);
+            _coinCountText.text = _coinsText + _coinCount;
         }
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "obstacle")
+        {
+            Time.timeScale = 0;
+            _isGameEnd = true;
+        }
+    }
 }
